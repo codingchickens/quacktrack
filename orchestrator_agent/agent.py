@@ -2,21 +2,24 @@ from google.adk import Agent
 from google.adk.tools import ToolContext
 from typing import Dict, Any
 import json
-from vertexai.generative_models import GenerationConfig
 from vertexai.generative_models import HarmCategory, HarmBlockThreshold
-import vertexai
-from vertexai.language_models import ChatModel
-import os
+from google import genai
+from google.genai.types import HttpOptions, ModelContent, Part, UserContent
 
 def call_orchestrator_gemini(student_text: str, memory_flags: dict, tool_context: ToolContext) -> Dict[str, Any]:
     """Calls Gemini to analyze student text and decide routing."""
+    print("LLAMANDOOOOOOOO")
+
+    tool_context.state.student_text = student_text
+    tool_context.state.memory_flags = memory_flags
+
     # Generation configuration
     generation_config = {
         "temperature": 0.2,
         "top_p": 0.8,
         "max_output_tokens": 512
     }
-    
+
     # Safety settings
     safety_settings = {
         HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
@@ -24,18 +27,19 @@ def call_orchestrator_gemini(student_text: str, memory_flags: dict, tool_context
         HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
         HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
     }
-    
-    # Initialize Vertex AI
-    vertexai.init(
-        project=os.getenv("GOOGLE_CLOUD_PROJECT"),
-        location="us-central1"
-    )
-    
-    # Use ChatModel directly
-    chat_model = ChatModel.from_pretrained("gemini-1.0-pro")
-    chat = chat_model.start_chat()
 
-    # Get current state
+    client = genai.Client(http_options=HttpOptions(api_version="v1"))
+    chat_session = client.chats.create(
+        model="gemini-2.5-flash",
+        history=[
+            UserContent(parts=[Part(text="Hello")]),
+            ModelContent(
+                parts=[Part(text="Great to meet you. What would you like to know?")],
+            ),
+        ],
+    )
+    response = chat_session.send_message(student_text)
+
     student_info = tool_context.state.get("student_info", {})
     learning_history = tool_context.state.get("learning_history", {})
 
@@ -44,11 +48,11 @@ def call_orchestrator_gemini(student_text: str, memory_flags: dict, tool_context
     1. The most appropriate agent to handle it (socrates, feedback, or rag)
     2. The language being used
     3. Any potential safety concerns
-    
+
     Student Info: {json.dumps(student_info)}
     Learning History: {json.dumps(learning_history)}
     Current Message: {student_text}
-    
+
     Respond in JSON format with:
     {
         "selected_agent": "agent_name",
@@ -62,8 +66,9 @@ def call_orchestrator_gemini(student_text: str, memory_flags: dict, tool_context
     """
 
     try:
-        response = chat.send_message(prompt)
-        return json.loads(response.text.strip())
+        response = chat_session.send_message(prompt)
+        return { "response": response.text }
+
     except json.JSONDecodeError:
         return {
             "selected_agent": "none",
@@ -96,7 +101,7 @@ def update_session_state(analysis: Dict[str, Any], tool_context: ToolContext) ->
     }
 
 root_agent = Agent(
-    name="orchestrator_agent", 
+    name="orchestrator_agent",
     description="Central agent that coordinates the learning system, ensuring ethics and intelligent routing",
     instruction="""Role and Purpose:
         You are the `orchestrator_agent`, a central coordination component within a multi-agent educational system. Your function is twofold: (1) ensure that all interactions comply with strict ethical and safety standards, and (2) route each valid student message to the appropriate internal agent based on predefined logic.
@@ -147,12 +152,12 @@ root_agent = Agent(
         - Include sensitive data without proper context.
         Respond with the following JSON object:
         ```json
-        {{
+        {
             "selected_agent": "none",
             "trigger_integration": false,
             "status": "rejected",
             "reason": "Input has been blocked for ethical or safety reasons. Please rephrase respectfully and clearly."
-        }}
+        }
         ```
 
         9. **Output Validation**
@@ -173,14 +178,10 @@ root_agent = Agent(
 
         Input:
         Student message:
-        """
         {student_text}
-        """
 
         Student history flags:
-        """
         {memory_flags}
-        """
 
         ---
 
@@ -205,7 +206,7 @@ root_agent = Agent(
         "status": "approved"
         }
         """,
-    model="gemini-1.0-pro",
+    model="gemini-2.0-flash",
     tools=[
         call_orchestrator_gemini,
         validate_input,

@@ -13,7 +13,7 @@ def validate_content(text: str, tool_context: ToolContext) -> Dict[str, Any]:
         project=os.getenv("GOOGLE_CLOUD_PROJECT"),
         location="us-central1"
     )
-    
+
     # Configuration for safety
     safety_settings = {
         HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
@@ -21,10 +21,10 @@ def validate_content(text: str, tool_context: ToolContext) -> Dict[str, Any]:
         HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_ONLY_HIGH,
         HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
     }
-    
+
     # Use ChatModel directly
-    chat_model = ChatModel.from_pretrained("gemini-1.0-pro")
-    
+    chat_model = ChatModel.from_pretrained("gemini-2.0-flash")
+
     return {
         "action": "validate_content",
         "is_valid": True,  # Updated by the model
@@ -39,7 +39,7 @@ def log_security_event(event: Dict[str, Any], tool_context: ToolContext) -> Dict
     security_logs.append(event)
     current_session["security_logs"] = security_logs
     tool_context.state["current_session"] = current_session
-    
+
     return {
         "action": "log_security_event",
         "event": event,
@@ -71,9 +71,9 @@ Use your tools to:
 - Enforce safety settings
 
 Always err on the side of caution when dealing with potential security concerns.""",
-    model="gemini-1.0-pro",
+    model="gemini-2.0-flash	",
     tools=[
         validate_content,
         log_security_event
     ]
-) 
+)
