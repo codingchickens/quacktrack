@@ -15,7 +15,7 @@ load_dotenv()
 
 PROJECT_ID = "quacktrack-ia"
 LOCATION = "us-central1"
-REASONING_ENGINE_APP_NAME = f"projects/{PROJECT_ID}/locations/{LOCATION}/reasoningEngines/7082510575590178816"
+REASONING_ENGINE_APP_NAME = f"projects/{PROJECT_ID}/locations/{LOCATION}/reasoningEngines/7899146620640428032"
 RAG_CORPUS_RESOURCE_NAME = f"projects/{PROJECT_ID}/locations/{LOCATION}/ragCorpora/3458764513820540928"
 SIMILARITY_TOP_K = 5
 VECTOR_DISTANCE_THRESHOLD = 0.7
@@ -31,7 +31,7 @@ async def get_or_create_session(user_id: str):
     """Gets an existing session or creates a new one."""
     try:
         existing_sessions = await session_service.list_sessions(
-            app_name="quacktrack",
+            app_name=REASONING_ENGINE_APP_NAME,
             user_id=user_id
         )
 
@@ -65,7 +65,7 @@ async def get_or_create_session(user_id: str):
         }
 
         await session_service.create_session(
-            app_name="quacktrack",
+            app_name=REASONING_ENGINE_APP_NAME,
             user_id=user_id,
             session_id=session_id,
             state=initial_state
@@ -82,7 +82,7 @@ async def main():
         # Configure the runner with session service
         runner = Runner(
             agent=root_agent,
-            app_name="quacktrack",
+            app_name=REASONING_ENGINE_APP_NAME,
             session_service=session_service,
             memory_service=memory_service
         )

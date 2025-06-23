@@ -3,11 +3,6 @@ from google.adk.tools import ToolContext
 
 def deny(tool_context: ToolContext):
   tool_context.state["denied"] = True
-  tool_context.state["is_final_response"] = True
-
-# def before_call(callback_context):
-#     print("CUSTOMS AGENT CHECKING:")
-#     print(callback_context.state["session_message"])
 
 customs_agent = LlmAgent(
   name="CustomsAgent",
@@ -51,5 +46,4 @@ customs_agent = LlmAgent(
 """,
   model="gemini-2.5-flash",
   tools=[deny],
-  # before_agent_callback=before_call
 )

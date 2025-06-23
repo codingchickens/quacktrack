@@ -4,30 +4,18 @@ from google.genai import types
 from google.adk.models.llm_response import LlmResponse
 
 def after_call(callback_context):
-  # agent_name = callback_context.agent_name
-  # print(f"[Callback] After agent call for agent: {agent_name}")
   state = callback_context.state
-  # print(f"[Callback] Checking if greeted: '{state.get("greeted", False)}'")
-  # print(f"[Callback] Checking if wrong_theme: '{state.get("wrong_theme", False)}'")
-  # print(f"[Callback] Checking if denied: '{state.get("denied", False)}'")
-  # print(f"[Callback] Checking approve_build_message: '{state.get("approve_build_message", False)}'")
   state["approved_build"] = "APPROVED!" in state.get("approve_build_message", False)
-  # print(f"[Callback] Checking if approved build: '{state.get("approved_build", False)}'")
 
 
 def before_call(callback_context):
   """Inspects the session and skips the call."""
   state = callback_context.state
   denied = state.get("denied", False)
-  # agent_name = callback_context.agent_name
-  # print(f"[Callback] Before agent call for agent: {agent_name}")
-  # print(f"[Callback] Checking if greeted: '{state.get("greeted", False)}'")
-  # print(f"[Callback] Checking if wrong_theme: '{state.get("wrong_theme", False)}'")
-  # print(f"[Callback] Checking if denied: '{state.get("denied", False)}'")
+  requested_summary = state.get("requested_summary", False)
 
-
-  if denied:
-      state["is_final_response"] = True
+  if denied or requested_summary:
+      # If the user denied the request or requested a summary, skip the call
       return LlmResponse(
           content=types.Content(
               role="model",

@@ -8,9 +8,10 @@ def before_call(callback_context):
   """Inspects the session and skips the call."""
   state = callback_context.state
   denied = state.get("denied", False)
+  requested_summary = state.get("requested_summary", False)
 
-  if denied:
-      # Return an LlmResponse to skip the actual LLM call
+  if denied or requested_summary:
+      # If the user gets denied or requested a summary, skip the call
       return LlmResponse(
           content=types.Content(
               role="model",
@@ -58,5 +59,5 @@ requirements_checker_agent = LlmAgent(
   """,
   model="gemini-2.5-flash",
   tools=[save_to_memory, wrong_theme],
-  before_agent_callback=before_call
+  before_agent_callback=before_call,
 )

@@ -1,23 +1,16 @@
 from google.adk.agents import LlmAgent
-from google.adk.tools import ToolContext
-from google.adk.memory import VertexAiRagMemoryService
 from google.genai import types
 from google.adk.models.llm_response import LlmResponse
 
 def before_call(callback_context):
   """Inspects the session and skips the call."""
   state = callback_context.state
-  # agent_name = callback_context.agent_name
-  # print(f"[Callback] Before agent call for agent: {agent_name}")
-  # print(f"[Callback] Checking if greeted: '{state.get("greeted", False)}'")
-  # print(f"[Callback] Checking if wrong_theme: '{state.get("wrong_theme", False)}'")
-  # print(f"[Callback] Checking if denied: '{state.get("denied", False)}'")
-  # print(f"[Callback] Checking message: '{state.get("session_message", '')}'")
   denied = state.get("denied", False)
   approved_build = state.get("approved_build", False)
+  requested_summary = state.get("requested_summary", False)
 
-  if denied or not approved_build:
-      state["is_final_response"] = True
+  # If the user's request is denied, the build is not approved, or requested a summary
+  if denied or not approved_build or requested_summary:
       return LlmResponse(
           content=types.Content(
               role="model",
