@@ -2,7 +2,7 @@
 
 # ➤ QuackTrack Agent A.K.A Ducrates
 
-![ducrates](ducrates.jpeg?raw=true)
+![ducrates](ducrates.png?raw=true)
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#description)
 
@@ -10,6 +10,7 @@
 
 QuackTrack is a Python-based,, multi-agent system designed to help users reflect on their learning experiences. It guides users through structured conversations, using a series of specialized agents to encourage deeper thinking, constructive dialogue, and personal growth. The system leverages Google ADK, Gemini 2.5 Flash, and RAG memory for advanced conversational and memory capabilities.
 
+![agent flow](flow.png?raw=true)
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#table-of-contents)
 
