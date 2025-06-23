@@ -1,8 +1,9 @@
 from google.adk.agents import LlmAgent
 from google.adk.tools import ToolContext
 
-def deny(tool_context: ToolContext):
+def deny(tool_context: ToolContext, reason: str):
   tool_context.state["denied"] = True
+  print(f"Message denied: {reason}")
 
 customs_agent = LlmAgent(
   name="CustomsAgent",
