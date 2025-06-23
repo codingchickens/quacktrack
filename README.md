@@ -1,102 +1,96 @@
-# QuackTrack - Multi-Agent Educational System
+<!-- ⚠️ This README has been generated from the file(s) "blueprint.md" ⚠️-->
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#quacktrack-agent)
 
-QuackTrack is an intelligent educational system that uses multiple specialized AI agents to provide personalized learning experiences. Built for the Google Cloud ADK Hackathon, it leverages Vertex AI for natural language understanding and learning assistance.
+# ➤ QuackTrack Agent
 
-## Features
 
-- **Multi-Agent Architecture**
-  - Orchestrator Agent: Central coordinator with language detection
-  - Socrates Agent: Socratic method questioning
-  - Feedback Agent: Constructive feedback
-  - RAG Agent: Information retrieval and context
-  - Security Agent: Content moderation and safety
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#description)
 
-- **Smart Capabilities**
-  - Language detection and multilingual support
-  - Ethical content filtering
-  - Personalized learning paths
-  - Session persistence
-  - Security auditing
+## ➤ Description
 
-## Technical Stack
+QuackTrack is a Python-based, multi-agent system designed to help users reflect on their learning experiences. It guides users through structured conversations, using a series of specialized agents to encourage deeper thinking, constructive dialogue, and personal growth. The system leverages Google ADK, Gemini 2.5 Flash, and RAG memory for advanced conversational and memory capabilities.
 
-- Python 3.12+
-- Google ADK
-- Vertex AI
-- SQLAlchemy
-- SQLite
 
-## Installation
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#table-of-contents)
 
-1. Create a virtual environment:
-```bash
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-```
+## ➤ Table of Contents
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+- [Installation](#installation)
+- [Usage](#usage)
+- [Features](#features)
+- [Configuration](#configuration)
+- [License](#license)
 
-3. Set up environment variables:
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
 
-## Usage
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#installation)
 
-1. Start the system:
+## ➤ Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/quacktrack.git
+   cd quacktrack
+   ```
+
+2. **Create a virtual environment (optional but recommended):**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up environment variables:**
+   - Copy `.env.example` to `.env` and fill in required values (e.g., `DATABASE_URL`).
+
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#usage)
+
+## ➤ Usage
+
+Run the main application:
+
 ```bash
 python main.py
 ```
 
-2. Interact with the system through the command line interface.
+- Enter your student ID when prompted.
+- Interact with the system by typing your reflections or questions.
+- Type `exit`, `quit`, or `bye` to end the session.
 
-## Architecture
 
-### Agent Structure
-```
-orchestrator_agent/
-├── agent.py (Root orchestrator)
-└── sub_agents/
-    ├── socrates_agent/
-    ├── feedback_agent/
-    ├── rag_agent/
-    └── security_agent/
-```
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#features)
 
-### Database Schema
-- students: User profiles and preferences
-- sessions: Learning sessions
-- interactions: Message history
-- security_logs: Security audit trail
+## ➤ Features
 
-## Development
+- **Multi-agent architecture:** Modular agents for greeting, compliance, requirements checking, argument building, and Socratic questioning.
+- **Session management:** Persistent sessions using a database backend.
+- **RAG memory integration:** Stores and retrieves relevant learning content.
+- **Ethical and safety compliance:** Built-in checks for privacy, bias, and responsible communication.
+- **Conversational guidance:** Encourages users to reflect, elaborate, and deepen their understanding.
 
-### Adding New Agents
 
-1. Create a new directory under `sub_agents/`
-2. Implement the agent with required tools
-3. Register the agent in the orchestrator
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#configuration)
 
-### Security Considerations
+## ➤ Configuration
 
-- Content validation through Security Agent
-- Ethical AI guidelines enforcement
-- Personal data protection
-- Safe learning environment maintenance
+- **Environment Variables:**
+  Set in the `.env` file.
+  - `DATABASE_URL`: Database connection string (default: `sqlite:///./learning_sessions.db`).
+  - Other Google ADK or API credentials as required.
 
-## Known Issues
+- **RAG Memory Service:**
+  Configured in `main.py` with resource name, similarity, and distance threshold.
 
-- **Model Availability**: Ensure that the models used are available in your region. Use `chat-bison` or `text-bison` as alternatives if other models are unavailable.
-- **Service Account Permissions**: Verify that the service account has the necessary permissions for Vertex AI and Google Drive.
+- **Agent Customization:**
+  Agents and their logic are defined in the `step_runner_agent/sub_agents/` directory.
 
-## License
 
-[Add your license here]
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#license)
 
-## Contributors
+## ➤ License
 
-[Add contributors here]
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file
