@@ -8,11 +8,6 @@ def before_call(callback_context):
   """Inspects the session and skips the call."""
   state = callback_context.state
   denied = state.get("denied", False)
-  # agent_name = callback_context.agent_name
-  # print(f"[Callback] Before agent call for agent: {agent_name}")
-  # print(f"[Callback] Checking if greeted: '{state.get("greeted", False)}'")
-  # print(f"[Callback] Checking if wrong_theme: '{state.get("wrong_theme", False)}'")
-  # print(f"[Callback] Checking if denied: '{state.get("denied", False)}'")
 
   if denied:
       # Return an LlmResponse to skip the actual LLM call
