@@ -1,28 +1,15 @@
+import time
 import os
 import asyncio
 import logging
-from dotenv import load_dotenv
 from google.adk import Runner
 from google.adk.sessions import DatabaseSessionService
-from google.adk.tools.agent_tool import AgentTool
-from spinner_agent.agent import root_agent
-# from orchestrator_agent.sub_agents.rag_agent.agent import rag_agent
-# from orchestrator_agent.sub_agents.socrates_agent.agent import socrates_agent
-# from orchestrator_agent.sub_agents.feedback_agent.agent import feedback_agent
-# from orchestrator_agent.sub_agents.security_agent.agent import security_agent
-from models import init_db
-import time
-from utils import call_agent_async
 from google.adk.memory import VertexAiRagMemoryService
+from dotenv import load_dotenv
+from models import init_db
+from utils import call_agent_async
+from step_runner_agent.agent import root_agent
 
-# logging.basicConfig(
-#     level=logging.INFO,
-#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-#     handlers=[
-#         logging.FileHandler('quacktrack.log'),
-#         logging.StreamHandler()
-#     ]
-# )
 logger = logging.getLogger(__name__)
 load_dotenv()
 db_url = os.getenv("DATABASE_URL", "sqlite:///./learning_sessions.db")
@@ -34,14 +21,7 @@ except Exception as e:
     logger.error(f"Failed to initialize database: {e}")
     raise
 
-# root_agent.tools.extend([
-#     AgentTool(rag_agent),
-#     AgentTool(socrates_agent),
-#     AgentTool(feedback_agent),
-#     AgentTool(security_agent)
-# ])
-
-RAG_CORPUS_RESOURCE_NAME = "projects/quacktrack-ia/locations/us-central1/ragCorpora/6917529027641081856"
+RAG_CORPUS_RESOURCE_NAME = "projects/quacktrack-ia/locations/us-central1/ragCorpora/3458764513820540928"
 SIMILARITY_TOP_K = 5
 VECTOR_DISTANCE_THRESHOLD = 0.7
 
@@ -114,7 +94,7 @@ async def main():
         user_id = input("Please enter your student ID: ")
         session_id = await get_or_create_session(user_id)
 
-        await call_agent_async(runner, user_id, session_id, 'Hi!')
+        print("Quack to start 🦆")
 
         while True:
             try:

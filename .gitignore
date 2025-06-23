@@ -1,16 +1,8 @@
-# Entorno virtual
 .venv/
 venv/
 __pycache__
-
-# Variables de entorno
 .env
-
-# Base de datos SQLite
 *.db
-*.sqlite3
-
-# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -31,12 +23,11 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# IDEs y editores
 .idea/
 .vscode/
 *.swp
 *.swo
 .DS_Store
-Thumbs.db 
-quacktrack-ia-694b93fe55da.json
+Thumbs.db
+quacktrack.log
+quacktrack-ia.json

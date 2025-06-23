@@ -3,7 +3,7 @@ from google.genai import types
 async def process_agent_response(event):
     """Process and display agent response events."""
     # Log basic event info
-    print(f"Event ID: {event.id}, Author: {event.author}")
+    # print(f"Event ID: {event.id}, Author: {event.author}")
 
     # Check for final response after specific parts
     final_response = None
@@ -16,17 +16,12 @@ async def process_agent_response(event):
         ):
             final_response = event.content.parts[0].text.strip()
 
-            # Use colors and formatting to make the final response stand out
             print(
-                f"\n╔══ AGENT RESPONSE ═════════════════════════════════════════"
+                f"\n╔══ AGENT RESPONSE - {event.author} ═════════════════════════════════════════"
             )
             print(final_response)
             print(
                 f"╚═════════════════════════════════════════════════════════════\n"
-            )
-        else:
-            print(
-                f"\n==> Final Agent Response: [No text content in final event]\n"
             )
 
     return final_response
