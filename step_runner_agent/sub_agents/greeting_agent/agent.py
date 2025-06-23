@@ -38,7 +38,6 @@ def set_remind(tool_context):
 def before_call(callback_context, llm_request):
   """Inspects the session and skips the call."""
   state = callback_context.state
-  print("llm_request contents:", llm_request.contents[-1].parts[0].text)
   if llm_request.contents and llm_request.contents[-1].parts and llm_request.contents[-1].parts[0].text:
     state["session_message"] = llm_request.contents[-1].parts[0].text
 
