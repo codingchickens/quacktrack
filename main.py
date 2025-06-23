@@ -6,12 +6,18 @@ from google.adk import Runner
 from google.adk.memory import VertexAiRagMemoryService
 from google.adk.sessions import VertexAiSessionService
 from dotenv import load_dotenv
-from models import init_db
+# from models import init_db
 from utils import call_agent_async
 from step_runner_agent.agent import root_agent
 
 logger = logging.getLogger(__name__)
 load_dotenv()
+
+# # Initialize the database session service when in development environ
+# from google.adk.sessions import DatabaseSessionService
+# db_url = os.getenv("DATABASE_URL", "sqlite:///./learning_sessions.db")
+# session_service = DatabaseSessionService(db_url=db_url)
+# init_db(db_url)
 
 PROJECT_ID = "quacktrack-ia"
 LOCATION = "us-central1"
@@ -19,6 +25,7 @@ REASONING_ENGINE_APP_NAME = f"projects/{PROJECT_ID}/locations/{LOCATION}/reasoni
 RAG_CORPUS_RESOURCE_NAME = f"projects/{PROJECT_ID}/locations/{LOCATION}/ragCorpora/3458764513820540928"
 SIMILARITY_TOP_K = 5
 VECTOR_DISTANCE_THRESHOLD = 0.7
+
 
 session_service = VertexAiSessionService(project=PROJECT_ID, location=LOCATION)
 memory_service = VertexAiRagMemoryService(

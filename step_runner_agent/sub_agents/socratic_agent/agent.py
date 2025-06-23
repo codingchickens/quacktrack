@@ -1,3 +1,15 @@
+"""
+This module defines a Socratic agent for guiding users through reflective thinking using the Socratic method.
+
+Classes and Functions:
+----------------------
+- before_call(callback_context):
+  Inspects the session state before the agent is called. If the user's request is denied, the build is not approved, or a Socratic response is not requested, returns an LlmResponse indicating the call is skipped. Otherwise, allows the agent to proceed.
+
+- socratic_agent (LlmAgent):
+  An instance of LlmAgent configured as the Socrates Agent. It prompts users to deepen their arguments, challenge their reasoning, and reflect on their learning using open-ended questions and friendly refutation. The agent avoids quoting the user and maintains a warm, thoughtful tone. The conversation flow adapts based on the user's responses, with possible handoff to a reminder agent for further feedback or skill enhancement.
+"""
+
 from google.adk.agents import LlmAgent
 from google.genai import types
 from google.adk.models.llm_response import LlmResponse
@@ -7,14 +19,14 @@ def before_call(callback_context):
   state = callback_context.state
   denied = state.get("denied", False)
   approved_build = state.get("approved_build", False)
-  requested_summary = state.get("requested_summary", False)
+  socratic_response = state.get("socratic_response", False)
 
   # If the user's request is denied, the build is not approved, or requested a summary
-  if denied or not approved_build or requested_summary:
+  if denied or not approved_build or not socratic_response:
       return LlmResponse(
           content=types.Content(
               role="model",
-              parts=[types.Part(text="")],
+              parts=[types.Part(text="Skipping")],
           )
       )
   else:

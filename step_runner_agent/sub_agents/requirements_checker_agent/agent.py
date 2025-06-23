@@ -1,3 +1,15 @@
+"""
+This module defines the RequirementsCheckerAgent, a specialized LlmAgent for the QuackTrack system. Its primary function is to evaluate user input and determine whether it should be stored in the system's memory database, focusing on content related to learning or education.
+
+Functions:
+- before_call(callback_context): Inspects the session state and conditionally blocks the LLM call if the user is denied or a summary is requested.
+- wrong_theme(tool_context): Flags the session state when the user's message is not related to learning or education.
+- save_to_memory(tool_context): Asynchronously saves the current session to a Vertex AI RAG memory service if the message is relevant.
+
+Agent:
+- requirements_checker_agent: An LlmAgent configured to use the above tools and logic, filtering messages for educational relevance and guiding users to share learning-related content.
+"""
+
 from google.adk.agents import LlmAgent
 from google.adk.tools import ToolContext
 from google.adk.memory import VertexAiRagMemoryService
@@ -8,9 +20,9 @@ def before_call(callback_context):
   """Inspects the session and skips the call."""
   state = callback_context.state
   denied = state.get("denied", False)
-  requested_summary = state.get("requested_summary", False)
+  socratic_response = state.get("socratic_response", False)
 
-  if denied or requested_summary:
+  if denied or not socratic_response:
       # If the user gets denied or requested a summary, skip the call
       return LlmResponse(
           content=types.Content(
@@ -22,6 +34,7 @@ def before_call(callback_context):
       return None
 
 def wrong_theme(tool_context: ToolContext):
+  """Sets the wrong theme flag in the state for when the user is not discussing learning or education."""
   tool_context.state["wrong_theme"] = True
 
 async def save_to_memory(tool_context: ToolContext):

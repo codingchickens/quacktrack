@@ -1,3 +1,22 @@
+"""
+This module defines the ArgumentBuilderAgent, a specialized LlmAgent for guiding users to develop clear and coherent arguments based on their reflections or learnings.
+
+Functions:
+  after_call(callback_context):
+    Post-processing callback that updates the agent's state to indicate whether the user's message has been approved, based on the presence of "APPROVED!" in the response.
+
+  before_call(callback_context):
+    Pre-processing callback that inspects the session state to determine if the agent's call should be skipped. Returns an LlmResponse indicating "Skipping" if the request is denied or lacks a socratic response; otherwise, allows normal agent execution.
+
+Constants:
+  RAG_CORPUS_RESOURCE_NAME (str): Resource name for the Retrieval-Augmented Generation (RAG) corpus.
+  SIMILARITY_TOP_K (int): Number of top similar documents to retrieve.
+  VECTOR_DISTANCE_THRESHOLD (float): Threshold for vector similarity in document retrieval.
+
+Objects:
+  argument_builder_agent (LlmAgent): An agent configured to help users elaborate their thoughts, ensuring their messages meet a minimum word count and internal structure before approval. Utilizes memory retrieval tools and custom callbacks for pre- and post-processing.
+"""
+
 from google.adk.agents import LlmAgent
 from google.adk.tools import load_memory # Tool to query memory
 from google.genai import types
@@ -12,14 +31,14 @@ def before_call(callback_context):
   """Inspects the session and skips the call."""
   state = callback_context.state
   denied = state.get("denied", False)
-  requested_summary = state.get("requested_summary", False)
+  socratic_response = state.get("socratic_response", False)
 
-  if denied or requested_summary:
+  if denied or not socratic_response:
       # If the user denied the request or requested a summary, skip the call
       return LlmResponse(
           content=types.Content(
               role="model",
-              parts=[types.Part(text="")],
+              parts=[types.Part(text="Skipping")]
           )
       )
   else:
